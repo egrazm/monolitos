@@ -1,0 +1,105 @@
+2025-09-01 12:44:27,256 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.3.71:5000
+2025-09-01 12:44:27,257 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 12:44:27,267 [INFO]  * Restarting with stat
+2025-09-01 12:44:27,548 [WARNING]  * Debugger is active!
+2025-09-01 12:44:27,551 [INFO]  * Debugger PIN: 714-208-197
+2025-09-01 12:54:47,055 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5004
+ * Running on http://192.168.3.71:5004
+2025-09-01 12:54:47,057 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 12:54:47,058 [INFO]  * Restarting with stat
+2025-09-01 12:54:47,329 [WARNING]  * Debugger is active!
+2025-09-01 12:54:47,331 [INFO]  * Debugger PIN: 714-208-197
+2025-09-01 12:54:59,531 [INFO] 127.0.0.1 - - [01/Sep/2025 12:54:59] "GET /health HTTP/1.1" 200 -
+2025-09-01 12:59:52,655 [INFO] 127.0.0.1 - - [01/Sep/2025 12:59:52] "[33mPOST /pedidos HTTP/1.1[0m" 404 -
+2025-09-01 12:59:52,684 [INFO] 127.0.0.1 - - [01/Sep/2025 12:59:52] "[33mPOST /pedidos HTTP/1.1[0m" 404 -
+2025-09-01 12:59:52,717 [INFO] 127.0.0.1 - - [01/Sep/2025 12:59:52] "[33mGET /pedidos HTTP/1.1[0m" 404 -
+2025-09-01 13:04:48,624 [INFO] 127.0.0.1 - - [01/Sep/2025 13:04:48] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:17:10,723 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 13:17:10,723 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 13:17:10,725 [INFO]  * Restarting with stat
+2025-09-01 13:17:10,998 [WARNING]  * Debugger is active!
+2025-09-01 13:17:11,000 [INFO]  * Debugger PIN: 310-160-432
+2025-09-01 13:19:49,239 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 13:19:49,239 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 13:19:49,241 [INFO]  * Restarting with stat
+2025-09-01 13:19:49,516 [WARNING]  * Debugger is active!
+2025-09-01 13:19:49,519 [INFO]  * Debugger PIN: 310-160-432
+2025-09-01 13:20:30,834 [INFO] 127.0.0.1 - - [01/Sep/2025 13:20:30] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:20:30,902 [INFO] 127.0.0.1 - - [01/Sep/2025 13:20:30] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:42:24,881 [INFO] 127.0.0.1 - - [01/Sep/2025 13:42:24] "[31m[1mPOST /productos HTTP/1.1[0m" 400 -
+2025-09-01 13:42:24,933 [INFO] 127.0.0.1 - - [01/Sep/2025 13:42:24] "[33mPOST /pedidos HTTP/1.1[0m" 404 -
+2025-09-01 13:42:24,958 [INFO] 127.0.0.1 - - [01/Sep/2025 13:42:24] "[33mPOST /pedidos HTTP/1.1[0m" 404 -
+2025-09-01 13:42:24,983 [INFO] 127.0.0.1 - - [01/Sep/2025 13:42:24] "[33mGET /pedidos HTTP/1.1[0m" 404 -
+2025-09-01 13:43:04,500 [INFO] 127.0.0.1 - - [01/Sep/2025 13:43:04] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:43:04,555 [INFO] 127.0.0.1 - - [01/Sep/2025 13:43:04] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:45:55,005 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 13:45:55,006 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 13:45:55,007 [INFO]  * Restarting with stat
+2025-09-01 13:45:55,285 [WARNING]  * Debugger is active!
+2025-09-01 13:45:55,287 [INFO]  * Debugger PIN: 310-160-432
+2025-09-01 13:46:26,160 [INFO] 127.0.0.1 - - [01/Sep/2025 13:46:26] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:46:45,589 [INFO] 127.0.0.1 - - [01/Sep/2025 13:46:45] "[31m[1mPOST /productos HTTP/1.1[0m" 400 -
+2025-09-01 13:48:48,401 [INFO] 127.0.0.1 - - [01/Sep/2025 13:48:48] "[31m[1mPOST /productos HTTP/1.1[0m" 400 -
+2025-09-01 13:48:58,769 [INFO] 127.0.0.1 - - [01/Sep/2025 13:48:58] "GET /health HTTP/1.1" 200 -
+2025-09-01 13:50:39,247 [INFO] 127.0.0.1 - - [01/Sep/2025 13:50:39] "[31m[1mPOST /productos HTTP/1.1[0m" 400 -
+2025-09-01 13:50:59,002 [INFO] 127.0.0.1 - - [01/Sep/2025 13:50:59] "[35m[1mPOST /productos HTTP/1.1[0m" 201 -
+2025-09-01 13:50:59,035 [INFO] 127.0.0.1 - - [01/Sep/2025 13:50:59] "GET /productos/1 HTTP/1.1" 200 -
+2025-09-01 13:52:46,293 [INFO] 127.0.0.1 - - [01/Sep/2025 13:52:46] "GET /productos/1 HTTP/1.1" 200 -
+2025-09-01 13:52:56,254 [INFO] 127.0.0.1 - - [01/Sep/2025 13:52:56] "GET /productos/1 HTTP/1.1" 200 -
+2025-09-01 14:35:09,370 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 14:35:09,371 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 14:35:09,381 [INFO]  * Restarting with stat
+2025-09-01 14:35:09,691 [WARNING]  * Debugger is active!
+2025-09-01 14:35:09,694 [INFO]  * Debugger PIN: 442-965-413
+2025-09-01 14:35:40,136 [INFO] 127.0.0.1 - - [01/Sep/2025 14:35:40] "GET /health HTTP/1.1" 200 -
+2025-09-01 14:38:45,629 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 14:38:45,629 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 14:38:45,631 [INFO]  * Restarting with stat
+2025-09-01 14:38:45,908 [WARNING]  * Debugger is active!
+2025-09-01 14:38:45,913 [INFO]  * Debugger PIN: 442-965-413
+2025-09-01 14:41:11,329 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 14:41:11,329 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 14:41:11,330 [INFO]  * Restarting with stat
+2025-09-01 14:41:11,638 [WARNING]  * Debugger is active!
+2025-09-01 14:41:11,643 [INFO]  * Debugger PIN: 442-965-413
+2025-09-01 14:49:58,797 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-01 14:49:58,797 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-01 14:49:58,799 [INFO]  * Restarting with stat
+2025-09-01 14:49:59,079 [WARNING]  * Debugger is active!
+2025-09-01 14:49:59,082 [INFO]  * Debugger PIN: 442-965-413
+2025-09-02 10:48:14,082 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.3.71:5001
+2025-09-02 10:48:14,082 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-02 10:48:14,095 [INFO]  * Restarting with stat
+2025-09-02 10:48:14,411 [WARNING]  * Debugger is active!
+2025-09-02 10:48:14,415 [INFO]  * Debugger PIN: 442-965-413
+2025-09-02 11:21:24,259 [INFO] 127.0.0.1 - - [02/Sep/2025 11:21:24] "[35m[1mPOST /productos HTTP/1.1[0m" 201 -
+2025-09-02 11:21:38,753 [INFO] 127.0.0.1 - - [02/Sep/2025 11:21:38] "GET /productos HTTP/1.1" 200 -

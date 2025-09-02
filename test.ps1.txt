@@ -1,0 +1,59 @@
+# test.ps1 — Microservicios Pingüinos (Invoke-RestMethod E2E)
+
+$ErrorActionPreference = "Stop"
+
+# ==== CONFIG (ajusta si tus puertos son distintos) ====
+$TOKEN = "penguin-secret"
+$HEADERS = @{ Authorization = "Bearer $TOKEN" }
+
+$PRODUCTS_URL  = "http://127.0.0.1:5001"  # productos
+$INVENTORY_URL = "http://127.0.0.1:5002"  # inventario
+$PAYMENTS_URL  = "http://127.0.0.1:5003"  # pagos
+$ORDERS_URL    = "http://127.0.0.1:5004"  # pedidos
+# ======================================================
+
+function Show([string]$title, $obj) {
+  Write-Host "`n=== $title ===" -ForegroundColor Cyan
+  try { $obj | ConvertTo-Json -Depth 8 } catch { $obj | Out-String }
+}
+
+function IRM($Method, $Uri, $Body = $null) {
+  if ($Body -ne $null) {
+    return Invoke-RestMethod -Method $Method -Uri $Uri -Headers $HEADERS -ContentType "application/json" -Body $Body
+  } else {
+    return Invoke-RestMethod -Method $Method -Uri $Uri -Headers $HEADERS
+  }
+}
+
+# 0) Health checks
+Show "health productos"  (IRM GET "$PRODUCTS_URL/health")
+Show "health inventario" (IRM GET "$INVENTORY_URL/health")
+Show "health pagos"      (IRM GET "$PAYMENTS_URL/health")
+Show "health pedidos"    (IRM GET "$ORDERS_URL/health")
+
+# 1) Crear producto
+$producto = @{ nombre="Hielo Premium"; precio=10000 } | ConvertTo-Json -Compress
+Show "crear producto" (IRM POST "$PRODUCTS_URL/productos" $producto)
+
+# 2) Listar productos
+Show "listar productos" (IRM GET "$PRODUCTS_URL/productos")
+
+# 3) Cargar stock
+$stock = @{ producto_id=1; cantidad=50 } | ConvertTo-Json -Compress
+Show "cargar stock" (IRM POST "$INVENTORY_URL/stock" $stock)
+
+# 4) Consultar stock
+Show "ver stock 1" (IRM GET "$INVENTORY_URL/stock/1")
+
+# 5) Crear pedido OK
+$ok = @{ items=@(@{producto_id=1; cantidad=3}); pago=@{ medio="tarjeta"; moneda="PYG" } } | ConvertTo-Json -Compress
+Show "pedido OK" (IRM POST "$ORDERS_URL/pedidos" $ok)
+
+# 6) Pedido rechazado (libera reservas)
+$rej = @{ items=@(@{producto_id=1; cantidad=2}); pago=@{ medio="tarjeta"; moneda="PYG"; fail=$true } } | ConvertTo-Json -Compress
+Show "pedido rechazado" (IRM POST "$ORDERS_URL/pedidos" $rej)
+
+# 7) Listar pedidos
+Show "listar pedidos" (IRM GET "$ORDERS_URL/pedidos")
+
+Write-Host "`n✔ Fin de pruebas" -ForegroundColor Green
