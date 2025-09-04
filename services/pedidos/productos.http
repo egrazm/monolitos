@@ -1,0 +1,20 @@
+### Health
+GET http://127.0.0.1:5001/health
+
+### Crear
+POST http://127.0.0.1:5001/productos
+Authorization: Bearer penguin-secret
+Content-Type: application/json
+
+{
+  "nombre": "Queso Cheddar",
+  "precio": 15000
+}
+
+### Listar
+GET http://127.0.0.1:5001/productos
+Authorization: Bearer penguin-secret
+
+### Detalle
+GET http://127.0.0.1:5001/productos/1
+Authorization: Bearer penguin-secret

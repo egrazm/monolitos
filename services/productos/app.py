@@ -1,27 +1,20 @@
-
-import os, sqlite3, logging, datetime
+import os, sqlite3, logging
 from functools import wraps
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv("SERVICE_TOKEN", "penguin-secret")
-PORT = int(os.getenv("PORT", "5000"))
-DB_PATH = os.getenv("DB_PATH", "service.db")
+# Defaults simples
+TOKEN   = os.getenv("SERVICE_TOKEN", "penguin-secret")
+PORT    = int(os.getenv("PORT", "5001"))
+DB_PATH = os.getenv("DB_PATH", "productos.db")
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
 
-# Logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs.log", encoding="utf-8")
-    ]
-)
+# Logging simple a consola
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
 
 def require_token(fn):
@@ -40,7 +33,7 @@ def get_db():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": os.path.basename(os.getcwd())}
+    return {"status": "ok", "service": "productos"}
 
 def init_db():
     with get_db() as con:
@@ -57,7 +50,7 @@ def init_db():
 @app.post("/productos")
 @require_token
 def crear_producto():
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     nombre = data.get("nombre")
     precio = data.get("precio")
     if not nombre or precio is None:
@@ -90,7 +83,7 @@ def detalle_producto(pid):
 @app.put("/productos/<int:pid>")
 @require_token
 def editar_producto(pid):
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     nombre = data.get("nombre")
     precio = data.get("precio")
     if nombre is None and precio is None:
@@ -98,7 +91,8 @@ def editar_producto(pid):
     with get_db() as con:
         c = con.cursor()
         row = c.execute("SELECT id FROM productos WHERE id=?", (pid,)).fetchone()
-        if not row: return {"error":"No encontrado"}, 404
+        if not row:
+            return {"error": "No encontrado"}, 404
         if nombre is not None:
             c.execute("UPDATE productos SET nombre=? WHERE id=?", (nombre, pid))
         if precio is not None:

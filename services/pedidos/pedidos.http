@@ -1,0 +1,23 @@
+### Health
+GET http://127.0.0.1:5003/health
+
+### Crear pedido
+POST http://127.0.0.1:5003/pedidos
+Authorization: Bearer penguin-secret
+Content-Type: application/json
+
+{
+  "items": [
+    {"producto_id": 1, "cantidad": 2},
+    {"producto_id": 2, "cantidad": 1}
+  ],
+  "pago": {
+    "medio": "tarjeta",
+    "moneda": "PYG",
+    "referencia": "orden-abc-123"
+  }
+}
+
+### Detalle
+GET http://127.0.0.1:5003/pedidos/1
+Authorization: Bearer penguin-secret

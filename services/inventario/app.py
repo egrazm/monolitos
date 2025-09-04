@@ -1,4 +1,3 @@
-
 import os, sqlite3, logging, datetime
 from functools import wraps
 from flask import Flask, request, jsonify
@@ -6,22 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv("SERVICE_TOKEN", "penguin-secret")
-PORT = int(os.getenv("PORT", "5000"))
-DB_PATH = os.getenv("DB_PATH", "service.db")
+# Defaults simples para no romper si falta .env
+TOKEN   = os.getenv("SERVICE_TOKEN", "penguin-secret")
+PORT    = int(os.getenv("PORT", "5002"))
+DB_PATH = os.getenv("DB_PATH", "inventario.db")
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
 
-# Logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs.log", encoding="utf-8")
-    ]
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
 
 def require_token(fn):
@@ -37,10 +29,6 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
-
-@app.get("/health")
-def health():
-    return {"status": "ok", "service": os.path.basename(os.getcwd())}
 
 def init_db():
     with get_db() as con:
@@ -62,10 +50,14 @@ def init_db():
         """)
         con.commit()
 
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "inventario"}
+
 @app.post("/stock")
 @require_token
 def upsert_stock():
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     pid = data.get("producto_id")
     cantidad = data.get("cantidad")
     if not pid or cantidad is None:
@@ -93,19 +85,22 @@ def ver_stock(pid):
 @app.post("/reservar")
 @require_token
 def reservar():
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     pid = data.get("producto_id")
     cantidad = int(data.get("cantidad") or 0)
     if not pid or cantidad <= 0:
-        return {"error":"Faltan campos"}, 400
+        return {"error": "Faltan campos"}, 400
     with get_db() as con:
         c = con.cursor()
         row = c.execute("SELECT cantidad FROM stock WHERE producto_id=?", (pid,)).fetchone()
         actual = int(row["cantidad"]) if row else 0
         if actual < cantidad:
-            return {"error":"Stock insuficiente", "disponible": actual}, 409
+            return {"error": "Stock insuficiente", "disponible": actual}, 409
         nuevo = actual - cantidad
-        c.execute("INSERT INTO reservas (producto_id, cantidad, estado, created_at) VALUES (?,?, 'activa', ?)", (pid, cantidad, datetime.datetime.utcnow().isoformat()))
+        c.execute(
+            "INSERT INTO reservas (producto_id, cantidad, estado, created_at) VALUES (?,?, 'activa', ?)",
+            (pid, cantidad, datetime.datetime.utcnow().isoformat())
+        )
         rid = c.lastrowid
         c.execute("REPLACE INTO stock (producto_id, cantidad) VALUES (?,?)", (pid, nuevo))
         con.commit()
@@ -114,16 +109,17 @@ def reservar():
 @app.post("/liberar")
 @require_token
 def liberar():
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     rid = data.get("reserva_id")
-    if not rid: return {"error":"Falta reserva_id"}, 400
+    if not rid:
+        return {"error": "Falta reserva_id"}, 400
     with get_db() as con:
         c = con.cursor()
         res = c.execute("SELECT id, producto_id, cantidad, estado FROM reservas WHERE id=?", (rid,)).fetchone()
-        if not res: return {"error":"Reserva no existe"}, 404
+        if not res:
+            return {"error": "Reserva no existe"}, 404
         if res["estado"] != "activa":
             return {"ok": True, "detalle": f"Reserva ya {res['estado']}"}
-        # devolver stock
         row = c.execute("SELECT cantidad FROM stock WHERE producto_id=?", (res["producto_id"],)).fetchone()
         actual = int(row["cantidad"]) if row else 0
         nuevo = actual + int(res["cantidad"])
@@ -135,13 +131,15 @@ def liberar():
 @app.post("/consumir")
 @require_token
 def consumir():
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     rid = data.get("reserva_id")
-    if not rid: return {"error":"Falta reserva_id"}, 400
+    if not rid:
+        return {"error": "Falta reserva_id"}, 400
     with get_db() as con:
         c = con.cursor()
         res = c.execute("SELECT id, estado FROM reservas WHERE id=?", (rid,)).fetchone()
-        if not res: return {"error":"Reserva no existe"}, 404
+        if not res:
+            return {"error": "Reserva no existe"}, 404
         if res["estado"] != "activa":
             return {"ok": True, "detalle": f"Reserva ya {res['estado']}"}
         c.execute("UPDATE reservas SET estado='consumida' WHERE id=?", (rid,))

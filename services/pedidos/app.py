@@ -1,27 +1,24 @@
-
 import os, sqlite3, logging, datetime
 from functools import wraps
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 
+import requests
+
 load_dotenv()
 
 TOKEN = os.getenv("SERVICE_TOKEN", "penguin-secret")
-PORT = int(os.getenv("PORT", "5000"))
-DB_PATH = os.getenv("DB_PATH", "service.db")
+PORT = int(os.getenv("PORT", "5003"))
+DB_PATH = os.getenv("DB_PATH", "pedidos.db")   
+
+PRODUCTS_URL  = os.getenv("PRODUCTS_URL",  "http://127.0.0.1:5001")
+INVENTORY_URL = os.getenv("INVENTORY_URL", "http://127.0.0.1:5002")
+PAYMENTS_URL  = os.getenv("PAYMENTS_URL",  "http://127.0.0.1:5004") 
 
 app = Flask(__name__)
 app.config["JSON_SORT_KEYS"] = False
 
-# Logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs.log", encoding="utf-8")
-    ]
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
 
 def require_token(fn):
@@ -37,18 +34,6 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
-
-@app.get("/health")
-def health():
-    return {"status": "ok", "service": os.path.basename(os.getcwd())}
-
-import requests, time
-from http_client import call_json
-from flask import request, jsonify
-
-PRODUCTS_URL = os.getenv("PRODUCTS_URL", "http://127.0.0.1:5001")
-INVENTORY_URL = os.getenv("INVENTORY_URL", "http://127.0.0.1:5002")
-PAYMENTS_URL = os.getenv("PAYMENTS_URL", "http://127.0.0.1:5003")
 
 def init_db():
     with get_db() as con:
@@ -72,89 +57,78 @@ def init_db():
         """)
         con.commit()
 
-def _get_producto(pid):
-    url = f"{PRODUCTS_URL}/productos/{pid}"
-    r = call_json("productos", "GET", url)
-    if r.status_code != 200:
-        raise RuntimeError(f"Producto {pid} no encontrado")
-    return r.json()
+def auth_headers():
+    return {"Authorization": f"Bearer {TOKEN}"}
 
-def _reservar(pid, cantidad):
-    url = f"{INVENTORY_URL}/reservar"
-    r = call_json("inventario", "POST", url, json={"producto_id": pid, "cantidad": cantidad})
-    if r.status_code != 200:
-        return None, r.json()
-    return r.json()["reserva_id"], None
-
-def _liberar(reserva_id):
-    url = f"{INVENTORY_URL}/liberar"
-    call_json("inventario", "POST", url, json={"reserva_id": reserva_id})
-
-def _consumir(reserva_id):
-    url = f"{INVENTORY_URL}/consumir"
-    call_json("inventario", "POST", url, json={"reserva_id": reserva_id})
-
-def _pagar(monto, moneda, medio, referencia=None, fail=False):
-    url = f"{PAYMENTS_URL}/pagar"
-    body = {"monto": monto, "moneda": moneda, "medio": medio}
-    if referencia: body["referencia"] = referencia
-    if fail: body["fail"] = True
-    r = call_json("pagos", "POST", url, json=body)
-    return r.json()
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "pedidos"}
 
 @app.post("/pedidos")
 @require_token
 def crear_pedido():
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     items = data.get("items") or []
     pago = data.get("pago") or {}
 
     if not items:
-        return {"error":"Debes enviar items"}, 400
+        return {"error": "Debes enviar items"}, 400
 
-    # 1) Precios de productos
     detalle = []
     total = 0.0
     for it in items:
-        pid = int(it.get("producto_id"))
-        cant = int(it.get("cantidad"))
-        if pid <= 0 or cant <= 0:
-            return {"error":"Items inválidos"}, 400
-        prod = _get_producto(pid)
-        precio_unit = float(prod["precio"])
-        total += precio_unit * cant
-        detalle.append({"producto_id": pid, "cantidad": cant, "precio_unit": precio_unit})
+        try:
+            producto_id = int(it.get("producto_id"))
+            cantidad = int(it.get("cantidad"))
+        except (TypeError, ValueError):
+            return {"error": "Items inválidos"}, 400
+        if producto_id <= 0 or cantidad <= 0:
+            return {"error": "Items inválidos"}, 400
 
-    # 2) Reservar stock
+        r = requests.get(f"{PRODUCTS_URL}/productos/{producto_id}", headers=auth_headers(), timeout=5)
+        if r.status_code != 200:
+            return {"error": f"Producto {producto_id} no encontrado"}, 400
+        prod = r.json()
+        precio_unit = float(prod.get("precio", 0))
+        if precio_unit <= 0:
+            return {"error": f"Precio inválido para producto {producto_id}"}, 400
+
+        total += precio_unit * cantidad
+        detalle.append({"producto_id": producto_id, "cantidad": cantidad, "precio_unit": precio_unit})
+
     reservas = []
     try:
         for d in detalle:
-            rid, err = _reservar(d["producto_id"], d["cantidad"])
-            if not rid:
-                # si falla una reserva, liberar lo reservado antes y abortar
+            r = requests.post(f"{INVENTORY_URL}/reservar", headers=auth_headers(),
+                              json={"producto_id": d["producto_id"], "cantidad": d["cantidad"]}, timeout=5)
+            if r.status_code != 200:
                 for rr in reservas:
-                    _liberar(rr)
-                return {"error": "No se pudo reservar", "detalle": err}, 409
-            reservas.append(rid)
+                    try:
+                        requests.post(f"{INVENTORY_URL}/liberar", headers=auth_headers(), json={"reserva_id": rr}, timeout=5)
+                    except Exception:
+                        log.exception("Error liberando reserva %s", rr)
+                return {"error": "No se pudo reservar", "detalle": r.json()}, 409
+            reservas.append(r.json()["reserva_id"])
 
-        # 3) Intentar pago
-        medio = (pago.get("medio") or "tarjeta")
-        moneda = (pago.get("moneda") or "PYG")
-        fail = bool(pago.get("fail", False))
-        p = _pagar(total, moneda, medio, referencia=None, fail=fail)
-
-        if p.get("estado") != "aprobado":
-            # pago rechazado -> liberar reservas
+        medio = pago.get("medio", "tarjeta")
+        moneda = pago.get("moneda", "PYG")
+        referencia = pago.get("referencia")
+        pay_body = {"monto": total, "moneda": moneda, "medio": medio}
+        if referencia:
+            pay_body["referencia"] = referencia
+        pay_resp = requests.post(f"{PAYMENTS_URL}/pagar", headers=auth_headers(), json=pay_body, timeout=5)
+        if pay_resp.status_code != 200 or pay_resp.json().get("estado") != "aprobado":
             for rr in reservas:
-                _liberar(rr)
+                try:
+                    requests.post(f"{INVENTORY_URL}/liberar", headers=auth_headers(), json={"reserva_id": rr}, timeout=5)
+                except Exception:
+                    log.exception("Error liberando reserva %s", rr)
             estado = "cancelado"
         else:
-            # consumo de reservas (confirmar)
             for rr in reservas:
-                _consumir(rr)
+                requests.post(f"{INVENTORY_URL}/consumir", headers=auth_headers(), json={"reserva_id": rr}, timeout=5)
             estado = "confirmado"
 
-        # 4) Persistir pedido
         with get_db() as con:
             c = con.cursor()
             c.execute("INSERT INTO pedidos (total, estado, created_at) VALUES (?,?,?)",
@@ -165,31 +139,26 @@ def crear_pedido():
                           (pedido_id, d["producto_id"], d["cantidad"], d["precio_unit"]))
             con.commit()
 
-        return {"pedido_id": pedido_id, "total": total, "estado": estado, "pago": p}, (201 if estado=="confirmado" else 202)
+        code = 201 if estado == "confirmado" else 202
+        return {"pedido_id": pedido_id, "total": total, "estado": estado}, code
 
-    except Exception as e:
-        # Falla inesperada -> liberar reservas best-effort
+    except requests.RequestException as e:
+        log.exception("Error en comunicación interna: %s", e)
         for rr in reservas:
-            try: _liberar(rr)
-            except: pass
-        log.exception("Error creando pedido")
-        return {"error": "Fallo interno creando pedido", "detalle": str(e)}, 500
-
-@app.get("/pedidos")
-@require_token
-def listar_pedidos():
-    with get_db() as con:
-        c = con.cursor()
-        rows = c.execute("SELECT id, total, estado, created_at FROM pedidos ORDER BY id DESC").fetchall()
-    return {"items": [dict(r) for r in rows]}
+            try:
+                requests.post(f"{INVENTORY_URL}/liberar", headers=auth_headers(), json={"reserva_id": rr}, timeout=5)
+            except Exception:
+                log.exception("Error liberando reserva %s", rr)
+        return {"error": "Fallo comunicando con servicios internos"}, 502
 
 @app.get("/pedidos/<int:pid>")
 @require_token
-def detalle_pedido(pid):
+def detalle_pedido(pid: int):
     with get_db() as con:
         c = con.cursor()
         p = c.execute("SELECT id, total, estado, created_at FROM pedidos WHERE id=?", (pid,)).fetchone()
-        if not p: return {"error":"No encontrado"}, 404
+        if not p:
+            return {"error": "No encontrado"}, 404
         its = c.execute("SELECT producto_id, cantidad, precio_unit FROM items WHERE pedido_id=?", (pid,)).fetchall()
     return {"pedido": dict(p), "items": [dict(x) for x in its]}
 

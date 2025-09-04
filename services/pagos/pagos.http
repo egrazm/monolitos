@@ -1,0 +1,25 @@
+### Health
+GET http://127.0.0.1:5004/health
+
+### Pagar aprobado
+POST http://127.0.0.1:5004/pagar
+Authorization: Bearer penguin-secret
+Content-Type: application/json
+
+{
+  "monto": 52000,
+  "moneda": "PYG",
+  "medio": "tarjeta"
+}
+
+### Pagar rechazado
+POST http://127.0.0.1:5004/pagar
+Authorization: Bearer penguin-secret
+Content-Type: application/json
+
+{
+  "monto": 52000,
+  "moneda": "PYG",
+  "medio": "tarjeta",
+  "fail": true
+}

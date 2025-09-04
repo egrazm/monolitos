@@ -1,0 +1,348 @@
+{
+  "info": {
+    "_postman_id": "da05cf64-7c3f-411b-abfd-862023b36a89",
+    "name": "Penguin Store - E2E",
+    "description": "Colección E2E: productos → inventario → pedidos → pagos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Productos /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_prod}}/health",
+              "host": [
+                "{{base_prod}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Inventario /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_inv}}/health",
+              "host": [
+                "{{base_inv}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagos /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_pay}}/health",
+              "host": [
+                "{{base_pay}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pedidos /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_ord}}/health",
+              "host": [
+                "{{base_ord}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Queso Cheddar\",\n  \"precio\": 15000\n}"
+            },
+            "url": {
+              "raw": "{{base_prod}}/productos",
+              "host": [
+                "{{base_prod}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_prod}}/productos",
+              "host": [
+                "{{base_prod}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalle producto (id=1)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_prod}}/productos/1",
+              "host": [
+                "{{base_prod}}"
+              ],
+              "path": [
+                "productos",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventario",
+      "item": [
+        {
+          "name": "Set stock producto 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": 1,\n  \"cantidad\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_inv}}/stock",
+              "host": [
+                "{{base_inv}}"
+              ],
+              "path": [
+                "stock"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Set stock producto 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": 2,\n  \"cantidad\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_inv}}/stock",
+              "host": [
+                "{{base_inv}}"
+              ],
+              "path": [
+                "stock"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver stock (id=1)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_inv}}/stock/1",
+              "host": [
+                "{{base_inv}}"
+              ],
+              "path": [
+                "stock",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Crear pedido (OK)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\"producto_id\": 1, \"cantidad\": 2},\n    {\"producto_id\": 2, \"cantidad\": 1}\n  ],\n  \"pago\": {\n    \"medio\": \"tarjeta\",\n    \"moneda\": \"PYG\",\n    \"referencia\": \"orden-abc-123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_ord}}/pedidos",
+              "host": [
+                "{{base_ord}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear pedido (pago rechazado)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\"producto_id\": 1, \"cantidad\": 1}\n  ],\n  \"pago\": {\n    \"medio\": \"tarjeta\",\n    \"moneda\": \"PYG\",\n    \"fail\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_ord}}/pedidos",
+              "host": [
+                "{{base_ord}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalle pedido (id=1)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_ord}}/pedidos/1",
+              "host": [
+                "{{base_ord}}"
+              ],
+              "path": [
+                "pedidos",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "penguin-secret"
+    },
+    {
+      "key": "base_prod",
+      "value": "http://127.0.0.1:5001"
+    },
+    {
+      "key": "base_inv",
+      "value": "http://127.0.0.1:5002"
+    },
+    {
+      "key": "base_pay",
+      "value": "http://127.0.0.1:5004"
+    },
+    {
+      "key": "base_ord",
+      "value": "http://127.0.0.1:5003"
+    }
+  ]
+}

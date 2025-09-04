@@ -133,3 +133,24 @@
 2025-09-03 10:06:51,802 [INFO] 127.0.0.1 - - [03/Sep/2025 10:06:51] "[35m[1mPOST /stock HTTP/1.1[0m" 500 -
 2025-09-03 10:07:02,367 [INFO] 127.0.0.1 - - [03/Sep/2025 10:07:02] "POST /stock HTTP/1.1" 200 -
 2025-09-03 10:07:06,992 [INFO] 127.0.0.1 - - [03/Sep/2025 10:07:06] "GET /stock/3 HTTP/1.1" 200 -
+2025-09-03 14:30:12,108 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.3.71:5002
+2025-09-03 14:30:12,109 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-03 14:30:12,121 [INFO]  * Restarting with stat
+2025-09-03 14:30:12,633 [WARNING]  * Debugger is active!
+2025-09-03 14:30:12,638 [INFO]  * Debugger PIN: 442-965-413
+2025-09-03 14:32:00,538 [INFO] 127.0.0.1 - - [03/Sep/2025 14:32:00] "POST /stock HTTP/1.1" 200 -
+2025-09-03 14:32:06,815 [INFO] 127.0.0.1 - - [03/Sep/2025 14:32:06] "GET /stock/4 HTTP/1.1" 200 -
+2025-09-04 08:55:46,766 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://192.168.3.71:5002
+2025-09-04 08:55:46,766 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-04 08:55:46,777 [INFO]  * Restarting with stat
+2025-09-04 08:55:47,108 [WARNING]  * Debugger is active!
+2025-09-04 08:55:47,111 [INFO]  * Debugger PIN: 442-965-413
+2025-09-04 09:34:21,571 [INFO] 127.0.0.1 - - [04/Sep/2025 09:34:21] "[31m[1mPOST /stock HTTP/1.1[0m" 400 -
+2025-09-04 09:34:30,916 [INFO] 127.0.0.1 - - [04/Sep/2025 09:34:30] "POST /stock HTTP/1.1" 200 -
+2025-09-04 09:35:20,513 [INFO] 127.0.0.1 - - [04/Sep/2025 09:35:20] "GET /stock/5 HTTP/1.1" 200 -

@@ -1,0 +1,22 @@
+### Health
+GET http://127.0.0.1:5002/health
+
+### Set stock
+POST http://127.0.0.1:5002/stock
+Authorization: Bearer penguin-secret
+Content-Type: application/json
+
+{
+  "producto_id": 1,
+  "cantidad": 10
+}
+
+### Reservar
+POST http://127.0.0.1:5002/reservar
+Authorization: Bearer penguin-secret
+Content-Type: application/json
+
+{
+  "producto_id": 1,
+  "cantidad": 2
+}
