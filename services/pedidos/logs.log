@@ -62,3 +62,19 @@
 2025-09-02 10:48:15,093 [INFO]  * Restarting with stat
 2025-09-02 10:48:15,620 [WARNING]  * Debugger is active!
 2025-09-02 10:48:15,623 [INFO]  * Debugger PIN: 442-965-413
+2025-09-02 13:56:02,940 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5004
+ * Running on http://192.168.3.71:5004
+2025-09-02 13:56:02,941 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-02 13:56:02,942 [INFO]  * Restarting with stat
+2025-09-02 13:56:03,512 [WARNING]  * Debugger is active!
+2025-09-02 13:56:03,515 [INFO]  * Debugger PIN: 442-965-413
+2025-09-03 10:03:01,106 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5004
+ * Running on http://192.168.3.71:5004
+2025-09-03 10:03:01,107 [INFO] [33mPress CTRL+C to quit[0m
+2025-09-03 10:03:01,108 [INFO]  * Restarting with stat
+2025-09-03 10:03:01,636 [WARNING]  * Debugger is active!
+2025-09-03 10:03:01,639 [INFO]  * Debugger PIN: 442-965-413
